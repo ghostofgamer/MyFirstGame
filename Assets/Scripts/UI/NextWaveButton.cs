@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class NextWaveButton : MonoBehaviour
 {
-    [SerializeField] private Spawn _spawner;
+    [SerializeField] private Spawner _spawner;
     [SerializeField] private Button _nextWaveButton;
 
     private void OnEnable()

@@ -15,82 +15,106 @@ public class HeroController : MonoBehaviour
 
     private float _timeWait = 0.3f;
     private float _rotateSpeed = 180f;
-    private float _rotY;
+    private float _mouseY;
     private float _rotate = 80f;
     private int _sensivity = 3;
+    private const string Run = "Run";
+    private const string Shoot = "Shoot";
+    private const string Back = "Back";
 
     private void Update()
     {
         float vertical = Input.GetAxis("Vertical");
         float mouseX = Input.GetAxis("Mouse X");
-        float mouseY = Input.GetAxis("Mouse Y");
         float horizontal = Input.GetAxis("Horizontal");
+        _mouseY -= Input.GetAxis("Mouse Y") * _sensivity;
+        _mouseY = Mathf.Clamp(_mouseY, -_rotate, _rotate);
         Vector3 offset = Vector3.zero;
-
-        _rotY -= Input.GetAxis("Mouse Y") * _sensivity;
-        _rotY = Mathf.Clamp(_rotY, -_rotate, _rotate);
-
-        if (_rotY != 0)
-        {
-            _camera.transform.localRotation = Quaternion.Euler(_rotY, 0, 0);
-        }
-
-        if (horizontal != 0)
-        {
-            offset = transform.right * horizontal * _speed * Time.deltaTime;
-            _animator.SetBool("Run", true);
-        }
-        else
-        {
-            _animator.SetBool("Run", false);
-        }
-        _timeWait -= Time.deltaTime;
+        offset += HorizontalMovement(horizontal, offset);
+        offset += VerticalMovement(vertical, offset, horizontal);
+        MouseY(_mouseY);
+        MouseX(mouseX);
 
         if (Input.GetMouseButton(0))
         {
-            _animator.SetBool("Shoot", true);
-
-            if (_timeWait < 0f)
-            {
-                _timeWait = 0.3f;
-                _shooter.Shoot(_point);
-                _audioSource.PlayOneShot(_shootClip);
-            }
+            Shooting();
         }
         else
         {
-            _animator.SetBool("Shoot", false);
+            _animator.SetBool(Shoot, false);
         }
+        offset += Physics.gravity * Time.deltaTime;
+        _controller.Move(offset);
+    }
 
+    private Vector3 HorizontalMovement(float horizontal, Vector3 offset)
+    {
+        if (horizontal != 0)
+        {
+            offset += transform.right * horizontal * _speed * Time.deltaTime;
+            _animator.SetBool(Run, true);
+        }
+        else
+        {
+            _animator.SetBool(Run, false);
+        }
+        return offset;
+    }
+
+    private Vector3 VerticalMovement(float vertical, Vector3 offset, float horizontal)
+    {
         if (vertical > 0)
         {
             offset += transform.forward * vertical * _speed * Time.deltaTime;
-            _animator.SetBool("Run", true);
+            _animator.SetBool(Run, true);
         }
         else
         {
             if (horizontal == 0)
             {
-                _animator.SetBool("Run", false);
+                _animator.SetBool(Run, false);
             }
         }
 
         if (vertical < 0)
         {
             offset += transform.forward * vertical * _speed * Time.deltaTime;
-            _animator.SetBool("Back", true);
+            _animator.SetBool(Back, true);
         }
 
         else
         {
-            _animator.SetBool("Back", false);
+            _animator.SetBool(Back, false);
         }
+        return offset;
+    }
 
+    private void Shooting()
+    {
+        _timeWait -= Time.deltaTime;
+        _animator.SetBool(Shoot, true);
+
+        if (_timeWait < 0f)
+        {
+            _timeWait = 0.3f;
+            _shooter.Shoot(_point);
+            _audioSource.PlayOneShot(_shootClip);
+        }
+    }
+
+    private void MouseY(float _rotY)
+    {
+        if (_rotY != 0)
+        {
+            _camera.transform.localRotation = Quaternion.Euler(_rotY, 0, 0);
+        }
+    }
+
+    private void MouseX(float mouseX)
+    {
         if (mouseX != 0)
         {
             transform.Rotate(transform.up * mouseX * _rotateSpeed * Time.deltaTime);
         }
-        offset += Physics.gravity * Time.deltaTime;
-        _controller.Move(offset);
     }
 }

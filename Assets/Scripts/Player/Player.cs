@@ -21,14 +21,6 @@ public class Player : MonoBehaviour
         _currentHealth = _health;
     }
 
-    private void Update()
-    {
-        if (_currentHealth > 100)
-        {
-            _currentHealth = 100;
-        }
-    }
-
     public void ApplyDamage(int damage)
     {
         _currentHealth -= damage;
@@ -45,6 +37,11 @@ public class Player : MonoBehaviour
     {
         _currentHealth += health;
         HealthChanged?.Invoke(_currentHealth, _health);
+
+        if (_currentHealth > 100)
+        {
+            _currentHealth = 100;
+        }
     }
 
     public void Die()

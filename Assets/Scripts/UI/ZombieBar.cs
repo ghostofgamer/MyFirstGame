@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ZombieBar : Bar
 {
-    [SerializeField] private Spawn _spawn;
+    [SerializeField] private Spawner _spawn;
 
     private void OnEnable()
     {
