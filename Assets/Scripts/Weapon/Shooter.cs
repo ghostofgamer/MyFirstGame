@@ -16,7 +16,7 @@ public class Shooter : MonoBehaviour
         return hit;
     }
 
-    public void Shoot(Transform shootPoint)
+    public void Shoot(/*Transform shootPoint*/)
     {
         if (GetRaycastHit().collider.TryGetComponent(out Zombie zombie))
         {

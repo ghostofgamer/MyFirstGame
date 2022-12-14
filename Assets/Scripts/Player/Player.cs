@@ -5,8 +5,8 @@ using UnityEngine.Events;
 
 public class Player : MonoBehaviour
 {
+    [SerializeField] private PlayerAnimations _playerAnimations;
     [SerializeField] private int _health;
-    [SerializeField] private Animator _animator;
 
     private int _currentHealth;
     private int _score = 0;
@@ -28,7 +28,7 @@ public class Player : MonoBehaviour
 
         if (_currentHealth <= 0)
         {
-            _animator.SetBool("Die", true);
+            _playerAnimations.DiePlayer(true);
             Die();
         }
     }

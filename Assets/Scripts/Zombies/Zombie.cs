@@ -7,20 +7,17 @@ using UnityEngine.Events;
 [RequireComponent(typeof(NavMeshAgent))]
 public class Zombie : MonoBehaviour
 {
+    [SerializeField] private ZombieVoice _zombieVoice;
+    [SerializeField] private ZombieAnimations _zombieAnimations;
     [SerializeField] private float _health;
     [SerializeField] private int _damage;
     [SerializeField] private float _delay;
     [SerializeField] private float _transitionRange;
     [SerializeField] private float _rangeSpread;
-    [SerializeField] private Animator _animator;
-    [SerializeField] private AudioSource _audioSource;
 
     private NavMeshAgent _navMeshAgent;
     private float _lastAttackTime;
     private Player _player;
-    private const string Died = "Die";
-    private const string ToAttack = "Attack";
-    private const string Run = "Z_Run";
 
     public event UnityAction<Zombie> Dying;
 
@@ -39,7 +36,7 @@ public class Zombie : MonoBehaviour
 
             if (Vector3.Distance(transform.position, _player.transform.position) < _transitionRange)
             {
-                _animator.Play(ToAttack);
+                _zombieAnimations.ToAttacking();
 
                 if (_lastAttackTime <= 0)
                 {
@@ -51,7 +48,7 @@ public class Zombie : MonoBehaviour
 
             if (_navMeshAgent.remainingDistance > _transitionRange)
             {
-                _animator.Play(Run);
+                _zombieAnimations.Running();
             }
         }
     }
@@ -68,8 +65,8 @@ public class Zombie : MonoBehaviour
         if (_health <= 0)
         {
             Die();
-            _animator.SetBool(Died, true);
-            _audioSource.Stop();
+            _zombieAnimations.DieZombie(true);
+            _zombieVoice.VoiceOff();
             Dying?.Invoke(this);
         }
     }

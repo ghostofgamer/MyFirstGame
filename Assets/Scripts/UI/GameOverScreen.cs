@@ -36,7 +36,7 @@ public class GameOverScreen : MonoBehaviour
     private void OnDied() 
     {
         _gameOverGroup.alpha = 1;
-        Time.timeScale = 0;
+        Time.timeScale = 0.1f;
     }
 
     private void OnRestartButtonClick()

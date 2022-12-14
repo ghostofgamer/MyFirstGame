@@ -2,15 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HeroController : MonoBehaviour
+public class PlayerMovement : MonoBehaviour
 {
+    [SerializeField] private SoundShooter _soundShooter;
+    [SerializeField] private PlayerAnimations _playerAnimations;
     [SerializeField] private Shooter _shooter;
-    [SerializeField] private Transform _point;
-    [SerializeField] private AudioSource _audioSource;
-    [SerializeField] private AudioClip _shootClip;
     [SerializeField] private float _speed = 3f;
     [SerializeField] private CharacterController _controller;
-    [SerializeField] private Animator _animator;
     [SerializeField] private Transform _camera;
 
     private float _timeWait = 0.3f;
@@ -18,9 +16,6 @@ public class HeroController : MonoBehaviour
     private float _mouseY;
     private float _rotate = 80f;
     private int _sensivity = 3;
-    private const string Run = "Run";
-    private const string Shoot = "Shoot";
-    private const string Back = "Back";
 
     private void Update()
     {
@@ -41,7 +36,7 @@ public class HeroController : MonoBehaviour
         }
         else
         {
-            _animator.SetBool(Shoot, false);
+            _playerAnimations.Shooting(false);
         }
         offset += Physics.gravity * Time.deltaTime;
         _controller.Move(offset);
@@ -52,11 +47,11 @@ public class HeroController : MonoBehaviour
         if (horizontal != 0)
         {
             offset += transform.right * horizontal * _speed * Time.deltaTime;
-            _animator.SetBool(Run, true);
+            _playerAnimations.Running(true);
         }
         else
         {
-            _animator.SetBool(Run, false);
+            _playerAnimations.Running(false);
         }
         return offset;
     }
@@ -66,25 +61,25 @@ public class HeroController : MonoBehaviour
         if (vertical > 0)
         {
             offset += transform.forward * vertical * _speed * Time.deltaTime;
-            _animator.SetBool(Run, true);
+            _playerAnimations.Running(true);
         }
         else
         {
             if (horizontal == 0)
             {
-                _animator.SetBool(Run, false);
+                _playerAnimations.Running(false);
             }
         }
 
         if (vertical < 0)
         {
             offset += transform.forward * vertical * _speed * Time.deltaTime;
-            _animator.SetBool(Back, true);
+            _playerAnimations.RunBack(true);
         }
 
         else
         {
-            _animator.SetBool(Back, false);
+            _playerAnimations.RunBack(false);
         }
         return offset;
     }
@@ -92,13 +87,13 @@ public class HeroController : MonoBehaviour
     private void Shooting()
     {
         _timeWait -= Time.deltaTime;
-        _animator.SetBool(Shoot, true);
+        _playerAnimations.Shooting(true);
 
         if (_timeWait < 0f)
         {
             _timeWait = 0.3f;
-            _shooter.Shoot(_point);
-            _audioSource.PlayOneShot(_shootClip);
+            _shooter.Shoot();
+            _soundShooter.AudioShoot();
         }
     }
 
