@@ -8,6 +8,7 @@ public class Spawner : MonoBehaviour
     [SerializeField] private List<Wave> _waves;
     [SerializeField] private Transform _spawnPoint;
     [SerializeField] private Player _player;
+    [SerializeField] private Score _score;
 
     private Transform[] _points;
     private Wave _currentWave;
@@ -60,7 +61,7 @@ public class Spawner : MonoBehaviour
     {
         Zombie enemy = Instantiate(_currentWave.Template[Random.Range(0, _currentWave.Template.Length)], _points[Random.Range(0, _points.Length)].position, Quaternion.identity).GetComponent<Zombie>();
         enemy.Init(_player);
-        enemy.Dying += OnZombieDying;
+        enemy.Dying += OnDying;
     }
 
     private void SetWave(int index)
@@ -75,10 +76,11 @@ public class Spawner : MonoBehaviour
         _spawned = 0;
     }
 
-    private void OnZombieDying(Zombie zombie)
+    private void OnDying(Zombie zombie)
     {
-        zombie.Dying -= OnZombieDying;
-        _player.AddScore();
+        zombie.Dying -= OnDying;
+        //_player.AddScore();
+        _score.AddScore();
     }
 }
 

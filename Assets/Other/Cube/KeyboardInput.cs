@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class KeyboardInput : MonoBehaviour
+public class BaseInput : MonoBehaviour
 {
     [SerializeField] private PhysicsMovement _movement;
 

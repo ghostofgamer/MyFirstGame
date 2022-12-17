@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class ZombieAnimations : MonoBehaviour
 {
-    [SerializeField] private Animator _animator;
-
     private const string Died = "Die";
     private const string ToAttack = "Attack";
     private const string Run = "Z_Run";
+
+    [SerializeField] private Animator _animator;
 
     public void ToAttacking()
     {
@@ -20,8 +20,8 @@ public class ZombieAnimations : MonoBehaviour
         _animator.Play(Run);
     }
 
-    public void DieZombie(bool change)
+    public void DieZombie(bool flag)
     {
-        _animator.SetBool(Died, change);
+        _animator.SetBool(Died, flag);
     }
 }
