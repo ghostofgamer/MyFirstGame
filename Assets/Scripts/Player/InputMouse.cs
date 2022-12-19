@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class InputMouse : MonoBehaviour
 {
@@ -14,24 +15,24 @@ public class InputMouse : MonoBehaviour
     private float _mouseY;
     private Vector2 _direction;
 
+    public event UnityAction MouseDown;
+    public event UnityAction MouseUp;
+
     private void Update()
     {
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButtonDown(0))
         {
-            //Shooting();
-            _shooter.StartCorutineShoot();
+            MouseDown?.Invoke();
         }
-        else
+        else if (Input.GetMouseButtonUp(0))
         {
-            _shooter.StopShoot();
-            //_playerAnimations.Shooting(false);
+            MouseUp?.Invoke();
         }
+
         _direction = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
         _mouseY -= _direction.y * _sensivity;
         _mouseY = Mathf.Clamp(_mouseY, -_rotate, _rotate);
         _inputCamera.SetDirectionX(_direction.x);
         _inputCamera.SetDirectionY(_mouseY);
-        //_playerMovement.SetDirectionX(_direction.x);
-        //_playerMovement.SetDirectionY(_mouseY);
     }
 }

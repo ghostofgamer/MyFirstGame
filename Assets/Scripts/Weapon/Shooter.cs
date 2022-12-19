@@ -8,6 +8,7 @@ public class Shooter : MonoBehaviour
     [SerializeField] private GameObject _crossHair;
     [SerializeField] private PlayerAnimations _playerAnimations;
     [SerializeField] private SoundShooter _soundShooter;
+    [SerializeField] private InputMouse _inputMouse;
 
     private Coroutine _coroutine;
     private int damage = 5;
@@ -20,52 +21,45 @@ public class Shooter : MonoBehaviour
         return hit;
     }
 
-    //public void Shoot(bool flag)
-    //{
-    //    if (flag == true)
-    //    {
-    //        _timeWait -= Time.deltaTime;
-    //        _playerAnimations.Shooting(true);
-
-    //        if (_timeWait < 0f)
-    //        {
-    //            _timeWait = 0.3f;
-    //            _soundShooter.AudioShoot();
-
-    //            if (GetRaycastHit().collider.TryGetComponent(out Zombie zombie))
-    //            {
-    //                zombie.TakeDamage(damage);
-    //            }
-    //        }
-    //    }
-    //}
-
-    public void StartCorutineShoot()
+    private void OnEnable()
     {
-        if (_coroutine != null)
-        {
-            StopCoroutine(FireWeapon());
-        }
-        _coroutine = StartCoroutine(FireWeapon());
-        _playerAnimations.Shooting(true);
-        _soundShooter.AudioShoot();
+        _inputMouse.MouseDown += OnPressed;
+        _inputMouse.MouseUp += OnUnPressed;
     }
 
-    public void StopShoot()
+    private void OnDisable()
     {
-        StopCoroutine(FireWeapon());
+        _inputMouse.MouseDown -= OnPressed;
+        _inputMouse.MouseUp -= OnUnPressed;
+    }
+
+    private void OnPressed()
+    {
+        _coroutine = StartCoroutine(FireWeapon());
+        _playerAnimations.Shooting(true);
+    }
+
+    private void OnUnPressed()
+    {
+        StopCoroutine(_coroutine);
         _playerAnimations.Shooting(false);
     }
 
     private IEnumerator FireWeapon()
     {
-        var WaitForSeconds = new WaitForSeconds(_timeWait);
+        var wait = new WaitForSeconds(_timeWait);
 
-        if (GetRaycastHit().collider.TryGetComponent(out Zombie zombie))
+        while (true)
         {
-            zombie.TakeDamage(damage);
-            print("убийство");
+            _soundShooter.AudioShoot();
+
+            if (GetRaycastHit().collider.TryGetComponent(out Zombie zombie))
+            {
+                zombie.TakeDamage(damage);
+                print("убийство");
+            }
+
+            yield return wait;
         }
-        yield return WaitForSeconds;
     }
 }
