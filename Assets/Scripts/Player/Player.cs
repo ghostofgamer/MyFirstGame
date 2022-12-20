@@ -9,12 +9,9 @@ public class Player : MonoBehaviour
     [SerializeField] private int _health;
 
     private int _currentHealth;
-    //private int _score = 0;
-    public int Money { get; private set; }
 
     public event UnityAction<int, int> HealthChanged;
     public event UnityAction Died;
-    //public event UnityAction<int> ChangeScore;
 
     private void Start()
     {
@@ -37,21 +34,11 @@ public class Player : MonoBehaviour
     {
         _currentHealth += health;
         HealthChanged?.Invoke(_currentHealth, _health);
-
-        if (_currentHealth > 100)
-        {
-            _currentHealth = 100;
-        }
+        _currentHealth = Mathf.Clamp(_currentHealth, 0, _health);
     }
 
     public void Die()
     {
         Died?.Invoke();
     }
-
-    //public void AddScore()
-    //{
-    //    _score++;
-    //    ChangeScore?.Invoke(_score);
-    //}
 }

@@ -56,7 +56,6 @@ public class Shooter : MonoBehaviour
             if (GetRaycastHit().collider.TryGetComponent(out Zombie zombie))
             {
                 zombie.TakeDamage(damage);
-                print("убийство");
             }
 
             yield return wait;

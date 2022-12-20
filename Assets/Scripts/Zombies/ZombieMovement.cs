@@ -37,7 +37,6 @@ public class ZombieMovement : MonoBehaviour
                 if (_lastAttackTime <= 0)
                 {
                     _zombie.Attack(_player);
-                    //Attack(_player);
                     _lastAttackTime = _delay;
                 }
                 _lastAttackTime -= Time.deltaTime;
@@ -50,7 +49,7 @@ public class ZombieMovement : MonoBehaviour
         }
     }
 
-    public void ChangeState(bool flag)
+    public void Dying(bool flag)
     {
         _isRun = flag;
     }

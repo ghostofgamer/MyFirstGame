@@ -13,16 +13,6 @@ public class PlayerAnimations : MonoBehaviour
 
     [SerializeField] private Animator _animator;
 
-    //public void Running(bool flag)
-    //{
-    //    _animator.SetBool(Run, flag);
-    //}
-
-    //public void RunBack(bool flag)
-    //{
-    //    _animator.SetBool(Back, flag);
-    //}
-
     public void Shooting(bool flag)
     {
         _animator.SetBool(Shoot, flag);

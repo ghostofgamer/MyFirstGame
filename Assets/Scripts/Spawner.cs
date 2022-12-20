@@ -28,6 +28,7 @@ public class Spawner : MonoBehaviour
         {
             _points[i] = _spawnPoint.GetChild(i);
         }
+        Spawners();
     }
 
     private void Update()
@@ -35,16 +36,6 @@ public class Spawner : MonoBehaviour
         if (_currentWave == null)
         {
             return;
-        }
-
-        _timeAfterlastSpawn += Time.deltaTime;
-
-        if (_timeAfterlastSpawn >= _currentWave.Delay)
-        {
-            InstantiateEnemy();
-            _spawned++;
-            _timeAfterlastSpawn = 0;
-            EnemyCountChanged?.Invoke(_spawned, _currentWave.Count);
         }
 
         if (_currentWave.Count <= _spawned)
@@ -79,8 +70,24 @@ public class Spawner : MonoBehaviour
     private void OnDying(Zombie zombie)
     {
         zombie.Dying -= OnDying;
-        //_player.AddScore();
         _score.AddScore();
+    }
+
+    public void Spawners()
+    {
+        StartCoroutine(SpawnMobs());
+    }
+
+    private IEnumerator SpawnMobs()
+    {
+        for (int i = 0; i < _currentWave.Count; i++)
+        {
+            InstantiateEnemy();
+            _spawned++;
+            _timeAfterlastSpawn = 0;
+            EnemyCountChanged?.Invoke(_spawned, _currentWave.Count);
+            yield return new WaitForSeconds(_currentWave.Delay);
+        }
     }
 }
 
